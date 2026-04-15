@@ -1,3 +1,5 @@
+const { EventSourcePolyfill } = require("event-source-polyfill");
+
 const log = document.getElementById("log");
 
 log.innerText += "Started.\n";
@@ -77,9 +79,10 @@ async function createConversation() {
 
 async function startSSE() {
     try {
-        const eventSource = new EventSource(config.Url + "/eventrouter/v1/sse", {
+        console.log(accessToken);
+        const eventSource = new EventSourcePolyfill(config.Url + "/eventrouter/v1/sse", {
            headers: {
-                'Authorization': `Bearer ${accessToken}`,
+                "Authorization": "Bearer " + accessToken,
                 'Accept': 'text/event-stream',
                 'X-Org-Id:': config.OrganizationId
             }

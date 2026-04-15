@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "event-source-polyfill": "^1.0.31",
     "express": "^5.2.1",
     "jquery": "^4.0.0"
   }
