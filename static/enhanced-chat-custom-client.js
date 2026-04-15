@@ -1,3 +1,5 @@
+const { event } = require("jquery");
+
 const log = document.getElementById("log");
 
 log.innerText += "Started.\n";
@@ -90,6 +92,16 @@ async function startSSE() {
         });    
         console.log("SSE connection established.");
         
+        eventSource.onerror = (error) => {
+            console.error("SSE Error:", error);
+            logToContainer("SSE Error", JSON.stringify(error, null, 4) + "\n");
+        };
+
+        eventSource.onopen = () => {
+            console.log("SSE Connection opened.");
+            logToContainer("SSE Connection", "Connection opened.\n");
+        };
+
         eventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("New message received:", data);
