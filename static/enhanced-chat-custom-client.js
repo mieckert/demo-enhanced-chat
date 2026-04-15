@@ -92,8 +92,9 @@ document.addEventListener('hide.bs.collapse', function (e) {
 let dataBsTargetCounter = 0;
 function logToContainer(message) {
     const logContainer = document.getElementById("log-container");
-    const logEntry = document.createElement(
-`<div class="card mb-3 text-container">
+    
+    const logEntry = `
+<div class="card mb-3 text-container">
     <div class="card-body">
         <div class="collapse-content collapsed" id="content${dataBsTargetCounter}" style="font-family: monospace; white-space: pre-wrap;">
             ${message}
@@ -102,13 +103,12 @@ function logToContainer(message) {
             type="button" 
             data-bs-toggle="collapse" 
             data-bs-target="#content${dataBsTargetCounter}" 
-            aria-expanded="false" 
-            aria-controls="content${dataBsTargetCounter}"
         >
             Read More
         </button>
     </div>
-</div>`);
-    logContainer.appendChild(logEntry);
+</div>`;
+
+    logContainer.insertAdjacentHTML('beforeend', logEntry);
     dataBsTargetCounter++;
 }
