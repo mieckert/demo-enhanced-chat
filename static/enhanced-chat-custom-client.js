@@ -40,7 +40,7 @@ async function generateAccessTokenForUnauthenticatedUser() {
 
     const json = await response.json();
 
-    log.innerText += JSON.stringify(json, null, 4) + "\n";
+    logToContainer(JSON.stringify(json, null, 4) + "\n");
     accessToken = json.accessToken;
 }
 
@@ -65,11 +65,35 @@ async function createConversation() {
     });
 
     if(response.ok) {
-        log.innerText += `Converstation ${uuid} created\n`;        
+        logToContainer(`Converstation ${uuid} created\n`);        
     }
     else {
-        log.innerText += `Error creating converstation\n`;
+        logToContainer(`Error creating converstation\n`);
         const json = await response.json();
-        log.innerText += JSON.stringify(json, null, 4) + "\n";
+        logToContainer(JSON.stringify(json, null, 4) + "\n");
     }
+}
+
+let dataBsTargetCounter = 0;
+function logToContainer(message) {
+    const logContainer = document.getElementById("log-container");
+    const logEntry = document.createElement(
+`<div class="card mb-3 text-container">
+    <div class="card-body">
+        <div class="collapse-content collapsed" id="content1" style="font-family: monospace; white-space: pre-wrap;">
+            ${message}
+        </div>
+        <button class="btn btn-link p-0 mt-2 toggle-btn" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#content${dataBsTargetCounter}" 
+            aria-expanded="false" 
+            aria-controls="content${dataBsTargetCounter}"
+        >
+            Read More
+        </button>
+    </div>
+</div>`);
+    logContainer.appendChild(logEntry);
+    dataBsTargetCounter++;
 }
