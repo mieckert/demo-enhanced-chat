@@ -10,7 +10,7 @@ const config = {
 
 let accessToken = undefined;
 let lastEventId = undefined;
-let uuid = undefined;
+let conversationId = undefined;
 
 main();
 
@@ -18,7 +18,7 @@ async function main() {
     await generateAccessTokenForUnauthenticatedUser();
     await startSSE();
     await createConversation();
-    await listConversationEntries();
+    await registerListConversationEntriesButton();
     await registerSendMessageButton();
 }
 
@@ -107,11 +107,11 @@ async function startSSE() {
 }
 
 async function createConversation() {
-    uuid = crypto.randomUUID();
-    console.log(uuid);
+    conversationId = crypto.randomUUID();
+    console.log(conversationId);
 
     const body = {        
-        "conversationId": uuid,
+        "conversationId": conversationId,
         "routingAttributes": null,
         "esDeveloperName": config.DeveloperName        
     };
@@ -127,17 +127,24 @@ async function createConversation() {
     });
 
     if(response.ok) {        
-        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
+        logToContainer("Create conversation", `Conversation ${conversationId} created\n`);        
     }
     else {
-        logToContainer("Create conversation", `Error creating converstation\n`);
+        logToContainer("Create conversation", `Error creating conversation\n`);
         const json = await response.json();
-        logToContainer("Create conversation", JSON.stringify(json, null, 4) + "\n");
+        console.log(json);
     }
 }
 
+async function registerListConversationEntriesButton() {
+    const button = document.getElementById("list-conversation-entries-button");
+    button.addEventListener("click", async () => {
+        listConversationEntries();
+    });
+}
+
 async function listConversationEntries() {
-    const response = await fetch(config.Url + `/iamessage/api/v2/conversation/${uuid}/entries`, {
+    const response = await fetch(config.Url + `/iamessage/api/v2/conversation/${conversationId}/entries`, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + accessToken
@@ -160,14 +167,38 @@ async function registerSendMessageButton() {
 }
 
 async function sendMessage(message) {
-    const body = {
-        "conversationId": uuid,
-        "message": {
-            "type": "text",
-            "text": message
-        }
-    };
+    const response = await fetch(config.Url + `/iamessage/api/v2/conversation/${conversationId}/message`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + accessToken
+        },
+        body: JSON.stringify({
+            "message": {                
+                "id": crypto.randomUUID(),
+                "messageType": "StaticContentMessage",
+                    "staticContent": {
+                    "formatType": "Text",
+                    "text": message,
+                }
+            },
+            "esDeveloperName": config.DeveloperName,
+            "isNewMessagingSession": false,        
+        })
+    });
+
+    if(response.ok) {
+        const json = await response.json();
+        logToContainer("Send message", JSON.stringify(json, null, 4) + "\n");
+    }
+    else {
+        logToContainer("Send message", `Error sending message\n`);
+        const json = await response.json();
+        console.log(json);
+    }
 }
+
+
 
 
 
