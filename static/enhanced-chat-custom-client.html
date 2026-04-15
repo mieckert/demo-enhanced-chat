@@ -41,6 +41,7 @@
 .toggle-header:hover {
     background-color: #f1f1f1;
 }
+
     </style>
 </head>
 
@@ -48,8 +49,10 @@
     <div class="container">
         <h1>Enhanced Chat Custom Client</h1>
 
-        <button class="btn btn-primary" id="start-button">Send Message</button>
-        <button class="btn btn-primary" id="list-conversation-entries-button">List Conversation Entries</button>
+        <div class="position-fixed top-0 end-0 m-3 d-flex gap-2">
+            <button class="btn btn-primary" id="start-button">Send Message</button>
+            <button class="btn btn-primary" id="list-conversation-entries-button">List Conversation Entries</button>
+        </div>
         
         <div class="container mt-4" id="log-container">            
 
