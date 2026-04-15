@@ -75,8 +75,31 @@ async function startSSE() {
         eventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("New message received:", data);
-            logToContainer("SSE Message Received", JSON.stringify(data, null, 4) + "\n");
+            logToContainer("Generic SSE Message Received", JSON.stringify(data, null, 4) + "\n");
         };
+
+        const salesforceEvents = [
+            // 'ping', 
+            'CONVERSATION_CLOSE_CONVERSATION',
+            'CONVERSATION_DELIVERY_ACKNOWLEDGEMENT',
+            'CONVERSATION_MESSAGE',
+            'CONVERSATION_PARTICIPANT_CHANGED',
+            'CONVERSATION_PROGRESS_INDICATOR',
+            'CONVERSATION_QUEUE_POSITION',
+            'CONVERSATION_READ_ACKNOWLEDGEMENT',
+            'CONVERSATION_ROUTING_RESULT',
+            'CONVERSATION_SESSION_STATUS_CHANGED',
+            'CONVERSATION_STREAMING_TOKEN',
+            'CONVERSATION_TYPING_STARTED_INDICATOR',
+            'CONVERSATION_TYPING_STOPPED_INDICATOR'
+        ];
+
+        salesforceEvents.forEach(eventType => {
+            eventSource.addEventListener(eventType, (event) => {
+                console.log(`Received ${eventType}:`, JSON.parse(event.data));
+                logToContainer(`SSE Message ${eventType} Received`, JSON.stringify(JSON.parse(event.data), null, 4) + "\n");
+            });
+        });
     } 
     catch (error) {
         console.error("SSE Connection failed:", error);
