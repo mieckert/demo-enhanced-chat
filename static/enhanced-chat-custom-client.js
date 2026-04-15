@@ -9,6 +9,7 @@ const config = {
 }
 
 let accessToken = undefined;
+let lastEventId = undefined;
 let uuid = undefined;
 
 main();
@@ -43,6 +44,7 @@ async function generateAccessTokenForUnauthenticatedUser() {
 
     logToContainer("Generate access token for unauthenticated user", JSON.stringify(json, null, 4) + "\n");
     accessToken = json.accessToken;
+    lastEventId = json.lastEventId;
 }
 
 async function createConversation() {
@@ -65,9 +67,8 @@ async function createConversation() {
         body: JSON.stringify(body)        
     });
 
-    if(response.ok) {
-        const json = await response.json();
-        logToContainer("Create conversation", `Converstation ${uuid} created\n` + JSON.stringify(json, null, 4) + "\n");        
+    if(response.ok) {        
+        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
     }
     else {
         logToContainer("Create conversation", `Error creating converstation\n`);
@@ -84,7 +85,7 @@ async function startSSE() {
                 "Authorization": "Bearer " + accessToken,
                 'Accept': 'text/event-stream',
                 'X-Org-Id:': config.OrganizationId,
-                'Last-Event-ID': uuid
+                'Last-Event-ID': lastEventId
             }
         });    
         console.log("SSE connection established.");
