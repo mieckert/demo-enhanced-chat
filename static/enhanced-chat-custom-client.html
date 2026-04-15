@@ -10,7 +10,7 @@
 
     <title>Enhanced Chat Custom Client</title>
     <style type="text/css">
-/* Limit to 5 lines when collapsed and not animating */
+/* 1. The 5-line limit logic */
 .collapse-content.collapsed:not(.show):not(.collapsing) {
     display: -webkit-box;
     -webkit-line-clamp: 5;
@@ -18,19 +18,27 @@
     overflow: hidden;
 }
 
-/* Rotate icon based on Bootstrap's aria-expanded state */
+/* 2. The Icon styling and rotation */
+.toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    width: 1.2rem; /* Give it a fixed width so text doesn't jump */
+    text-align: center;
+}
+
+/* When the header is expanded, rotate the icon */
 .toggle-header[aria-expanded="true"] .toggle-icon {
     transform: rotate(90deg);
 }
 
-.toggle-icon {
-    transition: transform 0.2s ease;
-    display: inline-block;
-}
-
-/* Make header look clickable */
+/* 3. Header styling */
 .toggle-header {
     cursor: pointer;
+    background-color: #f8f9fa;
+}
+
+.toggle-header:hover {
+    background-color: #f1f1f1;
 }
     </style>
 </head>

@@ -90,18 +90,20 @@ function logToContainer(message) {
     logEntry.className = 'card mb-3 overflow-hidden';
     
     logEntry.innerHTML = `
-        <div class="card-header toggle-header d-flex align-items-center py-2" 
-             data-bs-toggle="collapse" 
-             data-bs-target="#${id}" 
-             aria-expanded="false">
-            <span class="toggle-icon me-2 small text-muted"></span>
-            <strong class="small text-uppercase text-muted">Log Entry</strong>
+        <div class="card-header toggle-header d-flex align-items-center py-1" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#content${dataBsTargetCounter}" 
+            aria-expanded="false">
+            <span class="toggle-icon small text-muted">▶</span>
+            <small class="text-muted fw-bold ms-1">LOG ENTRY</small>
         </div>
         <div class="card-body p-0">
-            <div class="collapse-content collapsed p-3" id="${id}" 
-                 style="font-family: monospace; white-space: pre-wrap; font-size: 0.9rem;">${message}</div>
-        </div>
-    `;
+            <div class="collapse-content collapsed p-3" 
+                id="content${dataBsTargetCounter}" 
+                style="font-family: monospace; white-space: pre-wrap; word-break: break-all;">
+                ${message}
+            </div>
+        </div>`;
 
     container.appendChild(logEntry);
 
