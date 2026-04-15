@@ -3,9 +3,9 @@ const log = document.getElementById("log");
 log.innerText += "Started.\n";
 
 const config = {
-  "OrganizationId": "00DKB000002Sozi",
-  "DeveloperName": "EnhancedChatCustomClient",
-  "Url": "https://storm-200bc8ffc9c437.my.salesforce-scrt.com"
+    "OrganizationId": "00DKB000002Sozi",
+    "DeveloperName": "EnhancedChatCustomClient",
+    "Url": "https://storm-200bc8ffc9c437.my.salesforce-scrt.com"
 }
 
 let accessToken = undefined;
@@ -16,6 +16,7 @@ main();
 async function main() {
     await generateAccessTokenForUnauthenticatedUser();
     await createConversation();
+    await startSSE();
 }
 
 async function generateAccessTokenForUnauthenticatedUser() {
@@ -40,7 +41,7 @@ async function generateAccessTokenForUnauthenticatedUser() {
 
     const json = await response.json();
 
-    logToContainer(JSON.stringify(json, null, 4) + "\n");
+    logToContainer("Generate access token for unauthenticated user", JSON.stringify(json, null, 4) + "\n");
     accessToken = json.accessToken;
 }
 
@@ -65,14 +66,40 @@ async function createConversation() {
     });
 
     if(response.ok) {
-        logToContainer(`Converstation ${uuid} created\n`);        
+        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
     }
     else {
-        logToContainer(`Error creating converstation\n`);
+        logToContainer("Create conversation", `Error creating converstation\n`);
         const json = await response.json();
-        logToContainer(JSON.stringify(json, null, 4) + "\n");
+        logToContainer("Create conversation", JSON.stringify(json, null, 4) + "\n");
     }
 }
+
+async function startSSE() {
+    try {
+        const eventSource = new EventSource(config.Url + "/eventrouter/v1/sse", {
+           headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Accept': 'text/event-stream',
+                'X-Org-Id:': config.OrganizationId
+            }
+        });    
+        
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("New message received:", data);
+            logToContainer("SSE Message Received", JSON.stringify(data, null, 4) + "\n");
+        };
+    } 
+    catch (error) {
+        console.error("SSE Connection failed:", error);
+    }
+}
+
+
+
+
+
 
 let dataBsTargetCounter = 0;
 
@@ -81,7 +108,7 @@ let dataBsTargetCounter = 0;
  * @param {string} message - The log text
  * @param {HTMLElement} container - The element to append to
  */
-function logToContainer(message) {
+function logToContainer(header, message) {
     const container = document.getElementById("log-container");
     const id = `logContent_${dataBsTargetCounter++}`;
     
@@ -95,7 +122,7 @@ function logToContainer(message) {
             data-bs-target="#content${dataBsTargetCounter}" 
             aria-expanded="false">
             <span class="toggle-icon small text-muted">▶</span>
-            <small class="text-muted fw-bold ms-1">LOG ENTRY</small>
+            <small class="text-muted fw-bold ms-1">${header}</small>
         </div>
         <div class="card-body p-0">
             <div class="collapse-content collapsed p-3" 
