@@ -16,8 +16,9 @@ main();
 
 async function main() {
     await generateAccessTokenForUnauthenticatedUser();
-    await createConversation();
     await startSSE();
+    await createConversation();
+    await registerSendMessageButton();
 }
 
 async function generateAccessTokenForUnauthenticatedUser() {
@@ -111,7 +112,12 @@ async function startSSE() {
     }
 }
 
-
+async function registerSendMessageButton() {
+    const button = document.getElementById("start-button");
+    button.addEventListener("click", async () => {
+        console.log("TODO");
+    });
+}
 
 
 
