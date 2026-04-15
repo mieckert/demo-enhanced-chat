@@ -74,41 +74,64 @@ async function createConversation() {
     }
 }
 
+let dataBsTargetCounter = 0;
+
+/**
+ * Creates and appends a log entry to the container
+ * @param {string} message - The log text
+ * @param {HTMLElement} container - The element to append to
+ */
+function logToContainer(message) {
+    const container = document.getElementById("log-container");
+    const id = `logContent_${dataBsTargetCounter++}`;
+    
+    // 1. Create the card structure
+    const logEntry = document.createElement('div');
+    logEntry.className = 'card mb-3 overflow-hidden';
+    
+    logEntry.innerHTML = `
+        <div class="card-header toggle-header d-flex align-items-center py-2" 
+             data-bs-toggle="collapse" 
+             data-bs-target="#${id}" 
+             aria-expanded="false">
+            <span class="toggle-icon me-2 small text-muted"></span>
+            <strong class="small text-uppercase text-muted">Log Entry</strong>
+        </div>
+        <div class="card-body p-0">
+            <div class="collapse-content collapsed p-3" id="${id}" 
+                 style="font-family: monospace; white-space: pre-wrap; font-size: 0.9rem;">${message}</div>
+        </div>
+    `;
+
+    container.appendChild(logEntry);
+
+    // 2. Optional: Hide the toggle icon if the message is too short to collapse
+    const contentDiv = logEntry.querySelector('.collapse-content');
+    const header = logEntry.querySelector('.toggle-header');
+    
+    // If text is short (less than 5 lines / ~115px), disable collapse
+    if (contentDiv.scrollHeight < 115) {
+        header.removeAttribute('data-bs-toggle');
+        header.querySelector('.toggle-icon').style.visibility = 'hidden';
+        header.classList.remove('toggle-header');
+        contentDiv.classList.remove('collapsed');
+    }
+}
+
+/**
+ * Global Event Listener (Event Delegation)
+ * Listens for Bootstrap collapse events to handle any logic 
+ * when things open/close (though the CSS handles the icon rotation here).
+ */
 document.addEventListener('show.bs.collapse', function (e) {
-    // Ensure the event came from a '.collapse-content' element
     if (e.target.classList.contains('collapse-content')) {
-        const btn = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
-        if (btn) btn.innerHTML = 'Read Less';
+        // You can add additional logic here if needed
+        console.log(`Expanded: ${e.target.id}`);
     }
 });
 
 document.addEventListener('hide.bs.collapse', function (e) {
     if (e.target.classList.contains('collapse-content')) {
-        const btn = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
-        if (btn) btn.innerHTML = 'Read More';
+        console.log(`Collapsed: ${e.target.id}`);
     }
 });
-
-let dataBsTargetCounter = 0;
-function logToContainer(message) {
-    const logContainer = document.getElementById("log-container");
-    
-    const logEntry = `
-<div class="card mb-3 text-container">
-    <div class="card-body">
-        <div class="collapse-content collapsed" id="content${dataBsTargetCounter}" style="font-family: monospace; white-space: pre-wrap;">
-            ${message}
-        </div>
-        <button class="btn btn-link p-0 mt-2 toggle-btn" 
-            type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#content${dataBsTargetCounter}" 
-        >
-            Read More
-        </button>
-    </div>
-</div>`;
-
-    logContainer.insertAdjacentHTML('beforeend', logEntry);
-    dataBsTargetCounter++;
-}
