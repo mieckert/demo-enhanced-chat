@@ -18,6 +18,7 @@ async function main() {
     await generateAccessTokenForUnauthenticatedUser();
     await startSSE();
     await createConversation();
+    await listConversationEntries();
     await registerSendMessageButton();
 }
 
@@ -46,36 +47,6 @@ async function generateAccessTokenForUnauthenticatedUser() {
     logToContainer("Generate access token for unauthenticated user", JSON.stringify(json, null, 4) + "\n");
     accessToken = json.accessToken;
     lastEventId = json.lastEventId;
-}
-
-async function createConversation() {
-    uuid = crypto.randomUUID();
-    console.log(uuid);
-
-    const body = {        
-        "conversationId": uuid,
-        "routingAttributes": null,
-        "esDeveloperName": config.DeveloperName        
-    };
-
-    console.log(accessToken);
-    const response = await fetch(config.Url + "/iamessage/api/v2/conversation", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + accessToken
-        },
-        body: JSON.stringify(body)        
-    });
-
-    if(response.ok) {        
-        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
-    }
-    else {
-        logToContainer("Create conversation", `Error creating converstation\n`);
-        const json = await response.json();
-        logToContainer("Create conversation", JSON.stringify(json, null, 4) + "\n");
-    }
 }
 
 async function startSSE() {
@@ -112,13 +83,67 @@ async function startSSE() {
     }
 }
 
+async function createConversation() {
+    uuid = crypto.randomUUID();
+    console.log(uuid);
+
+    const body = {        
+        "conversationId": uuid,
+        "routingAttributes": null,
+        "esDeveloperName": config.DeveloperName        
+    };
+
+    console.log(accessToken);
+    const response = await fetch(config.Url + "/iamessage/api/v2/conversation", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + accessToken
+        },
+        body: JSON.stringify(body)        
+    });
+
+    if(response.ok) {        
+        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
+    }
+    else {
+        logToContainer("Create conversation", `Error creating converstation\n`);
+        const json = await response.json();
+        logToContainer("Create conversation", JSON.stringify(json, null, 4) + "\n");
+    }
+}
+
+async function listConversationEntries() {
+    const response = await fetch(config.Url + `/iamessage/api/v2/conversation/${uuid}/entries`, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + accessToken
+        }
+    })
+    if(response.ok) {
+        const json = await response.json();
+        logToContainer("List conversation entries", JSON.stringify(json, null, 4) + "\n");
+    }
+    else {
+        logToContainer("List conversation entries", `Error listing converstation entries\n`);
+    }
+}
+
 async function registerSendMessageButton() {
     const button = document.getElementById("start-button");
     button.addEventListener("click", async () => {
-        console.log("TODO");
+        sendMessage("Hello please help me!");
     });
 }
 
+async function sendMessage(message) {
+    const body = {
+        "conversationId": uuid,
+        "message": {
+            "type": "text",
+            "text": message
+        }
+    };
 
 
 
