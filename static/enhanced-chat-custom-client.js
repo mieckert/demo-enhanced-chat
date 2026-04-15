@@ -1,5 +1,3 @@
-const { EventSourcePolyfill } = require("event-source-polyfill");
-
 const log = document.getElementById("log");
 
 log.innerText += "Started.\n";
