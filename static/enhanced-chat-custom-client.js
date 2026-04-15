@@ -224,9 +224,7 @@ function logToContainer(heading, message) {
         <div class="card-body p-0">
             <div class="collapse-content collapsed p-3" 
                 id="content${dataBsTargetCounter}" 
-                style="font-family: monospace; white-space: pre-wrap; word-break: break-all;">
-                ${message}
-            </div>
+                style="font-family: monospace; white-space: pre-wrap; word-break: break-all;">${message}</div>
         </div>`;
 
     container.appendChild(logEntry);
