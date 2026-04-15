@@ -1,5 +1,3 @@
-const { event } = require("jquery");
-
 const log = document.getElementById("log");
 
 log.innerText += "Started.\n";
