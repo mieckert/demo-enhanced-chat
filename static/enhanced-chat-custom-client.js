@@ -1,7 +1,3 @@
-const log = document.getElementById("log");
-
-log.innerText += "Started.\n";
-
 const config = {
     "OrganizationId": "00DKB000002Sozi",
     "DeveloperName": "EnhancedChatCustomClient",
