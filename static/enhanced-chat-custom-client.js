@@ -74,13 +74,28 @@ async function createConversation() {
     }
 }
 
+document.addEventListener('show.bs.collapse', function (e) {
+    // Ensure the event came from a '.collapse-content' element
+    if (e.target.classList.contains('collapse-content')) {
+        const btn = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
+        if (btn) btn.innerHTML = 'Read Less';
+    }
+});
+
+document.addEventListener('hide.bs.collapse', function (e) {
+    if (e.target.classList.contains('collapse-content')) {
+        const btn = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
+        if (btn) btn.innerHTML = 'Read More';
+    }
+});
+
 let dataBsTargetCounter = 0;
 function logToContainer(message) {
     const logContainer = document.getElementById("log-container");
     const logEntry = document.createElement(
 `<div class="card mb-3 text-container">
     <div class="card-body">
-        <div class="collapse-content collapsed" id="content1" style="font-family: monospace; white-space: pre-wrap;">
+        <div class="collapse-content collapsed" id="content${dataBsTargetCounter}" style="font-family: monospace; white-space: pre-wrap;">
             ${message}
         </div>
         <button class="btn btn-link p-0 mt-2 toggle-btn" 
