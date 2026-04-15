@@ -108,7 +108,7 @@ let dataBsTargetCounter = 0;
  * @param {string} message - The log text
  * @param {HTMLElement} container - The element to append to
  */
-function logToContainer(header, message) {
+function logToContainer(heading, message) {
     const container = document.getElementById("log-container");
     const id = `logContent_${dataBsTargetCounter++}`;
     
@@ -122,7 +122,7 @@ function logToContainer(header, message) {
             data-bs-target="#content${dataBsTargetCounter}" 
             aria-expanded="false">
             <span class="toggle-icon small text-muted">▶</span>
-            <small class="text-muted fw-bold ms-1">${header}</small>
+            <small class="text-muted fw-bold ms-1">${heading}</small>
         </div>
         <div class="card-body p-0">
             <div class="collapse-content collapsed p-3" 
