@@ -66,7 +66,8 @@ async function createConversation() {
     });
 
     if(response.ok) {
-        logToContainer("Create conversation", `Converstation ${uuid} created\n`);        
+        const json = await response.json();
+        logToContainer("Create conversation", `Converstation ${uuid} created\n` + JSON.stringify(json, null, 4) + "\n");        
     }
     else {
         logToContainer("Create conversation", `Error creating converstation\n`);
@@ -77,14 +78,16 @@ async function createConversation() {
 
 async function startSSE() {
     try {
-        console.log(accessToken);
+        console.log("Starting SSE connection...");
         const eventSource = new EventSourcePolyfill(config.Url + "/eventrouter/v1/sse", {
            headers: {
                 "Authorization": "Bearer " + accessToken,
                 'Accept': 'text/event-stream',
-                'X-Org-Id:': config.OrganizationId
+                'X-Org-Id:': config.OrganizationId,
+                'Last-Event-ID': uuid
             }
         });    
+        console.log("SSE connection established.");
         
         eventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
