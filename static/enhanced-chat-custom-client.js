@@ -144,6 +144,7 @@ async function sendMessage(message) {
             "text": message
         }
     };
+}
 
 
 
