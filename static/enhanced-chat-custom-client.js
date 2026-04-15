@@ -84,7 +84,7 @@ async function startSSE() {
            headers: {
                 "Authorization": "Bearer " + accessToken,
                 'Accept': 'text/event-stream',
-                'X-Org-Id:': config.OrganizationId,
+                'X-Org-Id': config.OrganizationId,
                 'Last-Event-ID': lastEventId
             }
         });    
