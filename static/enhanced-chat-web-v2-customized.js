@@ -1,6 +1,11 @@
 function initEmbeddedMessaging() {
     try {
-        embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+        // Use inline display mode!      
+        embeddedservice_bootstrap.settings.displayMode = 'inline';
+        const chatContainer = document.getElementById('search-agentforce');
+        embeddedservice_bootstrap.settings.targetElement = chatContainer;
+        
+        embeddedservice_bootstrap.settings.language = 'en_US';
 
         embeddedservice_bootstrap.init(
             '00DKB000002Sozi',
@@ -38,8 +43,13 @@ document.getElementById('search-input').addEventListener('keyup', function(event
     }
 });
 
-function search() {
+async function search() {
     const query = document.getElementById('search-input').value;
     console.log("Search query: ", query);
     document.getElementById('search-results').classList.remove('d-none');
+
+    // launch chat programically
+    document.getElementById('search-agentforce').classList.remove('d-none');
+    await embeddedservice_bootstrap.utilAPI.launchChat();
+    await embeddedservice_bootstrap.utilAPI.sendTextMessage(query);
 }

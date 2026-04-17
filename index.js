@@ -1,8 +1,11 @@
 const http = require("http");
 const path = require("path");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 app.use("/bootstrap", express.static(path.join(__dirname, "/node_modules/bootstrap/dist")));
 app.use("/bootstrap-icons", express.static(path.join(__dirname, "/node_modules/bootstrap-icons")));
