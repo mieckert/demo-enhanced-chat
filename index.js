@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use("/bootstrap", express.static(path.join(__dirname, "/node_modules/bootstrap/dist")));
+app.use("/bootstrap-icons", express.static(path.join(__dirname, "/node_modules/bootstrap-icons")));
 app.use("/jquery", express.static(path.join(__dirname, "/node_modules/jquery/dist")));
 app.use("/event-source-polyfill", express.static(path.join(__dirname, "/node_modules/event-source-polyfill/src")));
 app.use(express.static("static"));
